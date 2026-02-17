@@ -1,0 +1,36 @@
+package ${packageName}.model.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * ${table.tableComment}DTO类
+ *
+ * @author ${table.functionAuthor}
+ * @since ${datetime}
+ */
+@Data
+@Schema(description = "${table.tableComment}DTO")
+public class ${table.className}DTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    #foreach($column in $columns)
+        #if($column.isRequired == "1")
+            #if($column.javaType == "String")
+            @NotBlank(message = "${column.columnComment}不能为空")
+            #else
+            @NotNull(message = "${column.columnComment}不能为空")
+            #end
+        #end
+    @Schema(description = "${column.columnComment}")
+    private ${column.javaType} ${column.javaField};
+
+    #end
+}

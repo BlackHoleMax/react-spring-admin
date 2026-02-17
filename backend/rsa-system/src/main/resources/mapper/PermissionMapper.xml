@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dev.illichitcat.system.dao.mapper.PermissionMapper">
+    <!-- 查询权限列表（包含菜单名称） -->
+    <select id="selectPermissionListWithMenuName" resultType="dev.illichitcat.system.model.vo.PermissionVO">
+        SELECT
+        p.id,
+        p.perm,
+        p.name,
+        p.menu_id,
+        IF(m.id IS NOT NULL, m.name, NULL) as menuName
+        FROM sys_permission p
+        LEFT JOIN sys_menu m ON p.menu_id = m.id
+        WHERE (m.del_flag = 0 OR m.id IS NULL)
+        <if test="name != null and name.trim() != ''">
+            AND p.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="perm != null and perm.trim() != ''">
+            AND p.perm LIKE CONCAT('%', #{perm}, '%')
+        </if>
+        <if test="menuId != null">
+            AND p.menu_id = #{menuId}
+        </if>
+        ORDER BY p.menu_id ASC, p.id ASC
+    </select>
+</mapper>

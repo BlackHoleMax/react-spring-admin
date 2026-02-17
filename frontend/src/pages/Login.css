@@ -1,0 +1,593 @@
+/* ========== 全局重置 ========== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========== Ant Design 主题覆盖 - 强制白色主题 ========== */
+.login-container {
+  /* 强制 Ant Design 组件使用浅色主题 */
+  --ant-primary-color: #6db33f;
+  --ant-primary-color-hover: #5a9f34;
+  --ant-primary-color-active: #4a8a2a;
+  --ant-success-color: #52c41a;
+  --ant-warning-color: #faad14;
+  --ant-error-color: #ff4d4f;
+  --ant-info-color: #1890ff;
+  --ant-text-color: #000000e0;
+  --ant-text-color-secondary: #000000a6;
+  --ant-text-color-tertiary: #00000073;
+  --ant-text-color-quaternary: #00000040;
+  --ant-border-color: #d9d9d9;
+  --ant-border-color-split: #f0f0f0;
+  --ant-bg-base: #ffffff;
+  --ant-bg-container: #ffffff;
+  --ant-bg-elevated: #ffffff;
+  --ant-bg-layout: #f5f5f5;
+  --ant-bg-spotlight: rgba(0, 0, 0, 0.25);
+}
+
+/* 强制所有 Ant Design 组件在登录页面使用白色背景 */
+.login-container .ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
+.login-container .ant-modal-wrap {
+  background-color: transparent !important;
+}
+
+.login-container .ant-modal {
+  background-color: #ffffff !important;
+}
+
+.login-container .ant-modal-content {
+  background-color: #ffffff !important;
+  box-shadow:
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.login-container .ant-modal-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.login-container .ant-modal-title {
+  color: #000000e0 !important;
+}
+
+.login-container .ant-modal-close {
+  color: #00000073 !important;
+}
+
+.login-container .ant-modal-close:hover {
+  color: #000000d9 !important;
+}
+
+.login-container .ant-modal-close-x {
+  color: #00000073 !important;
+}
+
+/* 强制输入框组件使用白色背景 */
+.login-container .ant-input,
+.login-container .ant-input-password {
+  background-color: #ffffff !important;
+  color: #000000e0 !important;
+}
+
+.login-container .ant-input::placeholder {
+  color: #00000040 !important;
+}
+
+.login-container .ant-input-affix-wrapper {
+  background-color: #ffffff !important;
+}
+
+.login-container .ant-input-affix-wrapper-focused {
+  background-color: #ffffff !important;
+}
+
+.login-container .ant-input-password-icon {
+  color: #00000073 !important;
+}
+
+.login-container .ant-input-password-icon:hover {
+  color: #000000d9 !important;
+}
+
+/* 强制按钮组件使用白色主题 */
+.login-container .ant-btn {
+  background-color: #ffffff !important;
+  color: #000000e0 !important;
+  border-color: #d9d9d9 !important;
+}
+
+.login-container .ant-btn:hover {
+  background-color: #ffffff !important;
+  color: #6db33f !important;
+  border-color: #6db33f !important;
+}
+
+.login-container .ant-btn-primary {
+  background: linear-gradient(135deg, #6db33f 0%, #61dafb 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.login-container .ant-btn-primary:hover {
+  background: linear-gradient(135deg, #61dafb 0%, #6db33f 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.login-container .ant-btn-link {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #6db33f !important;
+}
+
+.login-container .ant-btn-link:hover {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #61dafb !important;
+}
+
+/* 强制表单组件使用白色主题 */
+.login-container .ant-form-item {
+  color: #000000e0 !important;
+}
+
+.login-container .ant-form-item-label > label {
+  color: #000000e0 !important;
+}
+
+.login-container .ant-form-item-explain-error {
+  color: #ff4d4f !important;
+}
+
+.login-container .ant-form-item-has-error .ant-input,
+.login-container .ant-form-item-has-error .ant-input-affix-wrapper,
+.login-container .ant-form-item-has-error .ant-input-password {
+  border-color: #ff4d4f !important;
+}
+
+/* ========== 登录容器 ========== */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6db33f 0%, #61dafb 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+/* 动态背景装饰 - 体现 Spring 流动性 */
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  animation: springRotate 20s linear infinite;
+}
+
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  top: -200px;
+  right: -200px;
+  animation: springFloat 15s ease-in-out infinite;
+}
+
+/* ========== 登录卡片 ========== */
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  width: 100%;
+  max-width: 480px;
+  padding: 56px 48px;
+  border-radius: 20px;
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  animation: springEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== 头部区域 ========== */
+.login-header {
+  text-align: center;
+  margin-bottom: 48px;
+  animation: springSlideDown 0.6s ease-out 0.2s both;
+}
+
+.login-title {
+  font-size: 32px;
+  color: #1a1a2e;
+  margin: 0 0 12px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #6db33f 0%, #61dafb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  display: inline-block;
+}
+
+/* 标题下方的装饰线 - 体现 Spring 弹性 */
+.login-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #6db33f, #61dafb);
+  border-radius: 2px;
+  animation: springPulse 2s ease-in-out infinite;
+}
+
+.login-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* ========== 表单样式 ========== */
+.login-form {
+  width: 100%;
+}
+
+.login-input-item {
+  margin-bottom: 28px;
+  animation: springSlideUp 0.6s ease-out both;
+}
+
+.login-input-item:nth-child(1) {
+  animation-delay: 0.3s;
+}
+
+.login-input-item:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+/* 输入框设计 - 简洁性与一致性 */
+.ant-input-affix-wrapper.login-input,
+.ant-input-password.login-input {
+  height: 52px;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 输入框悬停效果 - 动态响应 */
+.ant-input-affix-wrapper.login-input:hover,
+.ant-input-password.login-input:hover {
+  border-color: #6db33f;
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(109, 179, 63, 0.15);
+}
+
+/* 输入框聚焦效果 - 可访问性优化 */
+.ant-input-affix-wrapper.login-input:focus,
+.ant-input-affix-wrapper.login-input-focused,
+.ant-input-password.login-input:focus,
+.ant-input-password.login-input-focused {
+  border-color: #6db33f;
+  box-shadow:
+    0 0 0 4px rgba(109, 179, 63, 0.1),
+    0 8px 25px rgba(109, 179, 63, 0.15);
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+.login-input .ant-input {
+  background: transparent !important;
+  color: #1a1a2e !important;
+  font-size: 16px;
+  padding: 0;
+  font-weight: 500;
+}
+
+.login-input .ant-input::placeholder {
+  color: #9ca3af !important;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* 确保密码输入框的文本颜色也正确 */
+.ant-input-password .ant-input {
+  background: transparent !important;
+  color: #1a1a2e !important;
+}
+
+.login-input-icon {
+  color: #9ca3af;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.ant-input-affix-wrapper.login-input:focus .login-input-icon,
+.ant-input-affix-wrapper.login-input-focused .login-input-icon,
+.ant-input-password.login-input:focus .login-input-icon,
+.ant-input-password.login-input-focused .login-input-icon {
+  color: #6db33f;
+  transform: scale(1.1);
+}
+
+/* ========== 选项区域 ========== */
+.login-options-item {
+  margin-bottom: 16px;
+  margin-top: -10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: springSlideUp 0.6s ease-out 0.5s both;
+  width: 100%;
+}
+
+.login-checkbox {
+  color: #4b5563;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.login-checkbox .ant-checkbox {
+  cursor: pointer;
+}
+
+.login-checkbox .ant-checkbox-inner {
+  background-color: #ffffff !important;
+}
+
+.login-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #6db33f !important;
+  border-color: #6db33f !important;
+}
+
+.login-forgot-link {
+  padding: 0;
+  height: auto;
+  color: #6db33f;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.login-forgot-link:hover {
+  color: #61dafb;
+  transform: translateX(3px);
+}
+
+/* ========== 登录按钮 ========== */
+.login-button-item {
+  margin-bottom: 0;
+  animation: springSlideUp 0.6s ease-out 0.6s both;
+}
+
+.login-button {
+  width: 100%;
+  height: 54px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6db33f 0%, #61dafb 100%);
+  border: none;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 25px rgba(109, 179, 63, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 按钮流光效果 - Spring 流动性 */
+.login-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.login-button:hover::before {
+  left: 100%;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #61dafb 0%, #6db33f 100%);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(109, 179, 63, 0.5);
+}
+
+.login-button:active {
+  transform: translateY(-2px) scale(0.98);
+  box-shadow: 0 8px 25px rgba(109, 179, 63, 0.4);
+}
+
+.login-button:focus,
+.login-button:focus-visible {
+  background: linear-gradient(135deg, #6db33f 0%, #61dafb 100%);
+  box-shadow:
+    0 0 0 4px rgba(109, 179, 63, 0.2),
+    0 8px 25px rgba(109, 179, 63, 0.4);
+}
+
+/* ========== 错误提示 ========== */
+.ant-form-item-explain-error {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 8px;
+  font-weight: 500;
+  animation: springShake 0.4s ease-in-out;
+}
+
+.ant-form-item-has-error .login-input {
+  border-color: #ef4444;
+  animation: springShake 0.4s ease-in-out;
+}
+
+/* ========== 动画定义 - Spring 弹性效果 ========== */
+
+/* 卡片入场动画 - 弹性缩放 */
+@keyframes springEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 背景旋转动画 - 流动性 */
+@keyframes springRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 背景浮动动画 - 动态响应 */
+@keyframes springFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-30px, 30px) scale(1.1);
+  }
+}
+
+/* 标题下滑动画 */
+@keyframes springSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 元素上滑动画 */
+@keyframes springSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 装饰线脉冲动画 */
+@keyframes springPulse {
+  0%,
+  100% {
+    width: 60px;
+    opacity: 1;
+  }
+  50% {
+    width: 80px;
+    opacity: 0.7;
+  }
+}
+
+/* 错误抖动动画 */
+@keyframes springShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+/* ========== 响应式设计 - 可访问性 ========== */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 48px 36px;
+    max-width: 420px;
+  }
+
+  .login-title {
+    font-size: 28px;
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 40px 28px;
+    border-radius: 16px;
+  }
+
+  .login-title {
+    font-size: 26px;
+  }
+
+  .login-subtitle {
+    font-size: 13px;
+  }
+
+  .ant-input-affix-wrapper.login-input,
+  .ant-input-password.login-input {
+    height: 48px;
+  }
+
+  .login-button {
+    height: 50px;
+    font-size: 16px;
+  }
+}
+
+/* ========== 可访问性增强 ========== */
+/* 键盘导航焦点样式 */
+.ant-input-affix-wrapper.login-input:focus-visible,
+.ant-input-password.login-input:focus-visible,
+.login-button:focus-visible,
+.login-checkbox:focus-visible,
+.login-forgot-link:focus-visible {
+  outline: 2px solid #6db33f;
+  outline-offset: 2px;
+}

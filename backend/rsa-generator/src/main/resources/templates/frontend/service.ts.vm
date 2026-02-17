@@ -1,0 +1,41 @@
+import {request} from "@/utils/request";
+
+export function list() {
+    return request.get("/api/${table.className.toLowerCase()}/list");
+}
+
+export function getInfo(id: number) {
+    return request.get("/api/${table.className.toLowerCase()}/" + id);
+}
+
+export function add(data: any) {
+    return request.post("/api/${table.className.toLowerCase()}", data);
+}
+
+export function edit(data: any) {
+    return request.put("/api/${table.className.toLowerCase()}", data);
+}
+
+export function remove(ids: number[]) {
+    return request.delete("/api/${table.className.toLowerCase()}/" + ids);
+}
+
+export function importData(formData: FormData) {
+    return request.post("/api/${table.className.toLowerCase()}/import", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+}
+
+export function exportData(ids?: number[]) {
+    return request.post("/api/${table.className.toLowerCase()}/export", ids || null, {
+        responseType: "blob",
+    });
+}
+
+export function getTemplate() {
+    return request.get("/api/${table.className.toLowerCase()}/template", {
+        responseType: "blob",
+    });
+}

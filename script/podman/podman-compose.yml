@@ -1,0 +1,182 @@
+version: '3.8'
+
+services:
+  # 后端应用
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: ../script/docker/backend/Dockerfile
+    container_name: web-template-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # 数据库配置
+      - DB_URL=jdbc:mysql://mysql:3306/simple_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      - DB_USERNAME=root
+      - DB_PASSWORD=12345678
+      
+      # Redis配置
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=12345678
+      - REDIS_DATABASE=0
+      
+      # RabbitMQ配置
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=admin
+      - RABBITMQ_PASSWORD=12345678
+      - RABBITMQ_VHOST=/
+      
+      # MinIO配置
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_SECRET_KEY=12345678
+      - MINIO_BUCKET_NAME=avatars
+      
+      # Spring配置
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # 前端应用
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: ../script/docker/frontend/Dockerfile
+    container_name: web-template-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # MySQL数据库
+  mysql:
+    image: docker.io/library/mysql:8.0
+    container_name: web-template-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=12345678
+      - MYSQL_DATABASE=simple_admin
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../../script/sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p12345678" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --max_connections=1000
+      --innodb_buffer_pool_size=256M
+
+  # Redis缓存
+  redis:
+    image: docker.io/library/redis:7-alpine
+    container_name: web-template-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "12345678", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: redis-server --requirepass 12345678 --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+  # RabbitMQ消息队列
+  rabbitmq:
+    image: docker.io/library/rabbitmq:3.12-management-alpine
+    container_name: web-template-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=12345678
+      - RABBITMQ_DEFAULT_VHOST=/
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      rabbitmq-server
+
+  # MinIO对象存储
+  minio:
+    image: docker.io/minio/minio:latest
+    container_name: web-template-minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - web-template-network
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    command: server /data --console-address ":9001"
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  minio_data:
+    driver: local
+
+networks:
+  web-template-network:
+    driver: bridge

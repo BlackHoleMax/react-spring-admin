@@ -1,0 +1,50 @@
+-- 动态生成${table.tableComment}菜单
+-- 注意：执行此SQL前，请确保父级菜单（如系统管理）已存在
+-- 如果父级菜单不存在，请先插入父级菜单，parent_id 设为 0
+-- 例如：INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms, is_cache, is_frame, create_by, create_time) VALUES (0, '系统管理', 'system', NULL, NULL, 'setting', 0, 1, '0', '0', NULL, '0', '0', 'admin', NOW());
+
+-- 设置父级菜单ID，请根据实际情况修改
+-- 如果你不知道父级菜单ID，可以查询：SELECT id, name FROM sys_menu WHERE parent_id = 0;
+SET @parentId = 0;
+
+-- ${table.tableComment}目录菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@parentId, '${table.tableComment}', '${table.className.toLowerCase()}',
+        '${table.className.toLowerCase()}/index', NULL, '#', '1', 0, '0', '0', NULL, '1', '1', 'admin', NOW(), NULL,
+        NULL);
+
+-- 获取刚插入的目录菜单ID
+SET @menuId = LAST_INSERT_ID();
+
+-- ${table.tableComment}查询菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@menuId, '${table.tableComment}查询', '', NULL, NULL, '#', '2', 0, '0', '0',
+        '${table.className.toLowerCase()}:list', '1', '0', 'admin', NOW(), NULL, NULL);
+
+-- ${table.tableComment}新增菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@menuId, '${table.tableComment}新增', '', NULL, NULL, '#', '2', 0, '0', '0',
+        '${table.className.toLowerCase()}:add', '1', '0', 'admin', NOW(), NULL, NULL);
+
+-- ${table.tableComment}修改菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@menuId, '${table.tableComment}修改', '', NULL, NULL, '#', '2', 0, '0', '0',
+        '${table.className.toLowerCase()}:edit', '1', '0', 'admin', NOW(), NULL, NULL);
+
+-- ${table.tableComment}删除菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@menuId, '${table.tableComment}删除', '', NULL, NULL, '#', '2', 0, '0', '0',
+        '${table.className.toLowerCase()}:remove', '1', '0', 'admin', NOW(), NULL, NULL);
+
+-- ${table.tableComment}导出菜单
+INSERT INTO sys_menu (parent_id, name, path, component, redirect, icon, type, order_num, visible, status, perms,
+                      is_cache, is_frame, create_by, create_time, update_by, update_time)
+VALUES (@menuId, '${table.tableComment}导出', '', NULL, NULL, '#', '2', 0, '0', '0',
+        '${table.className.toLowerCase()}:export', '1', '0', 'admin', NOW(), NULL, NULL);
+
+SELECT '菜单创建成功！请根据需要分配角色权限。' AS message;

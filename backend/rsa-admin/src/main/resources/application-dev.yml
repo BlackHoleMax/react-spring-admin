@@ -1,0 +1,28 @@
+# Dev环境配置示例 - 环境变量
+spring:
+  datasource:
+    url: jdbc:mysql://172.16.29.222:3306/simple_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: remote_user
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 172.16.29.222
+      port: 6379
+      password:
+      database: 0
+      timeout: 2000ms
+      cleanup-on-shutdown: true
+
+minio:
+  endpoint: http://172.16.29.222:9000
+  access-key: admin
+  secret-key: 12345678
+  bucket-name: avatars
+  secure: false
+
+# 日志配置
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: logs

@@ -1,0 +1,148 @@
+package ${packageName}.controller;
+
+import dev.illichitcat.common.common.result.Result;
+import dev.illichitcat.common.utils.ExcelUtils;
+import ${packageName}.model.dto.${table.className}DTO;
+import ${packageName}.model.dto.${table.className}ExcelDTO;
+import ${packageName}.model.entity.${table.className};
+import ${packageName}.model.vo.${table.className}VO;
+import ${packageName}.service.${table.className}Service;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * ${table.tableComment}控制器
+ *
+ * @author ${table.functionAuthor}
+ * @since ${datetime}
+ */
+@Tag(name = "${table.tableComment}")
+@RestController
+@RequestMapping("/api/${table.className.toLowerCase()}")
+public class ${table.className}Controller {
+
+    @Autowired
+    private ${table.className}Service ${table.className.toLowerCase()}Service;
+
+    /**
+     * 查询${table.tableComment}列表
+     */
+    @Operation(summary = "查询${table.tableComment}列表")
+    @GetMapping("/list")
+    public Result<List<${table.className}VO>> list() {
+        List<${table.className}> list = ${table.className.toLowerCase()}Service.list();
+        List<${table.className}VO> voList = list.stream().map(this::toVO).toList();
+        return Result.ok(voList);
+    }
+
+    /**
+     * 获取${table.tableComment}详情
+     */
+    @Operation(summary = "获取${table.tableComment}详情")
+    @GetMapping("/{id}")
+    public Result<${table.className}VO> getInfo(@PathVariable Long id) {
+        ${table.className} ${table.className.toLowerCase()} =${table.className.toLowerCase()}Service.getById(id);
+        return Result.ok(toVO(${table.className.toLowerCase()}));
+    }
+
+    /**
+     * 新增${table.tableComment}
+     */
+    @Operation(summary = "新增${table.tableComment}")
+    @PostMapping
+    public Result<Void> add(@RequestBody ${table.className}DTO dto) {
+        ${table.className} ${table.className.toLowerCase()} =new ${table.className}();
+        BeanUtils.copyProperties(dto, ${table.className.toLowerCase()});
+            ${table.className.toLowerCase()}Service.save(${table.className.toLowerCase()});
+        return Result.ok();
+    }
+
+    /**
+     * 修改${table.tableComment}
+     */
+    @Operation(summary = "修改${table.tableComment}")
+    @PutMapping
+    public Result<Void> edit(@RequestBody ${table.className}DTO dto) {
+        ${table.className} ${table.className.toLowerCase()} =new ${table.className}();
+        BeanUtils.copyProperties(dto, ${table.className.toLowerCase()});
+            ${table.className.toLowerCase()}Service.updateById(${table.className.toLowerCase()});
+        return Result.ok();
+    }
+
+    /**
+     * 删除${table.tableComment}
+     */
+    @Operation(summary = "删除${table.tableComment}")
+    @DeleteMapping("/{ids}")
+    public Result<Void> remove(@PathVariable Long[] ids) {
+            ${table.className.toLowerCase()}Service.removeBatchByIds(Arrays.asList(ids));
+        return Result.ok();
+    }
+
+    /**
+     * 导出${table.tableComment}
+     */
+    @Operation(summary = "导出${table.tableComment}")
+    @PostMapping("/export")
+    public void export(@RequestBody(required = false) Long[] ids, HttpServletResponse response) throws IOException {
+        List<Long> idList = ids != null ? Arrays.asList(ids) : null;
+        List<${table.className}ExcelDTO> dataList = ${table.className.toLowerCase()}Service.export${table.className}s(idList);
+        ExcelUtils.exportExcel(response, dataList, ${table.className}ExcelDTO.class, "${table.tableComment}", "${table.tableComment}列表");
+    }
+
+    /**
+     * 导入${table.tableComment}
+     */
+    @Operation(summary = "导入${table.tableComment}")
+    @PostMapping("/import")
+    public Result<String> importData(@RequestParam("file") MultipartFile file) {
+        try {
+            List<${table.className}ExcelDTO> dataList = ExcelUtils.importExcel(file, ${table.className}ExcelDTO.class);
+            String result = ${table.className.toLowerCase()}Service.import${table.className}s(dataList);
+            return Result.ok(result);
+        } catch (IOException e) {
+            return Result.fail("文件解析失败：" + e.getMessage());
+        } catch (Exception e) {
+            return Result.fail("导入失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 下载${table.tableComment}导入模板
+     */
+    @Operation(summary = "下载${table.tableComment}导入模板")
+    @GetMapping("/template")
+    public void downloadTemplate(HttpServletResponse response) throws IOException {
+        // 创建一个示例数据作为模板
+        List<${table.className}ExcelDTO> templateData = new ArrayList<>();
+            ${table.className}ExcelDTO template = new ${table.className}ExcelDTO();
+        #foreach($column in $columns)
+            #if($column.isList == "1")
+                #if($column.javaType == "String")
+                    template.set$column.javaField.substring(0,1).toUpperCase()$column.javaField.substring(1)("示例${column.columnComment}");
+                #elseif($column.javaType == "Integer")
+                    template.set$column.javaField.substring(0,1).toUpperCase()$column.javaField.substring(1)(1);
+                #end
+            #end
+        #end
+        templateData.add(template);
+
+        ExcelUtils.exportExcel(response, templateData, ${table.className}ExcelDTO.class, "${table.tableComment}导入模板", "模板说明");
+    }
+
+    private ${table.className}VO toVO(${table.className} entity) {
+            ${table.className}VO vo = new ${table.className}VO();
+        BeanUtils.copyProperties(entity, vo);
+        return vo;
+    }
+}

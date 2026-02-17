@@ -1,0 +1,30 @@
+package ${packageName}.model.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
+
+/**
+ * ${table.tableComment}实体类
+ *
+ * @author ${table.functionAuthor}
+ * @since ${datetime}
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("${table.tableName}")
+@Schema(description = "${table.tableComment}")
+public class ${table.className} {
+
+#foreach($column in $columns)
+    #if($column.isPk == "1")
+    @TableId(value = "${column.columnName}", type = IdType.AUTO)
+    #end
+@Schema(description = "${column.columnComment}")
+private ${column.javaType} ${column.javaField};
+
+#end
+}

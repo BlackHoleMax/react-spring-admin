@@ -1,0 +1,38 @@
+package ${packageName}.model.dto;
+
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.annotation.write.style.HeadRowHeight;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * ${table.tableComment}ExcelDTO类
+ *
+ * @author ${table.functionAuthor}
+ * @since ${datetime}
+ */
+@Data
+@ContentRowHeight(20)
+@HeadRowHeight(30)
+@Schema(description = "${table.tableComment}ExcelDTO")
+public class ${table.className}ExcelDTO implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    #foreach($column in $columns)
+        #if($column.isList == "1")
+            @ColumnWidth(20)
+            @ExcelProperty(value = "${column.columnComment}")
+            @Schema(description = "${column.columnComment}")
+            private ${column.javaType} ${column.javaField};
+
+        #end
+    #end
+}

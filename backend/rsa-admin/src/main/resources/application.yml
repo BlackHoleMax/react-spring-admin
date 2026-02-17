@@ -1,0 +1,276 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: backend-template
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      database: ${REDIS_DATABASE}
+      timeout: 2000ms
+      # 应用关闭时清空 Redis
+      cleanup-on-shutdown: false
+  threads:
+    virtual:
+      enabled: true
+  profiles:
+    active: dev
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: dev.illichitcat.system.model.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      table-prefix: sys_
+
+jwt:
+  expiration: 86400 # 24小时，单位：秒
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket-name: ${MINIO_BUCKET_NAME}
+  secure: false
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: all
+      paths-to-match: /**
+      packages-to-scan: dev.illichitcat.api
+    - group: user
+      paths-to-match: /api/user/**
+      packages-to-scan: dev.illichitcat.api.user.controller
+    - group: system
+      paths-to-match: /api/system/**
+      packages-to-scan: dev.illichitcat.api.system.controller
+  override-with-generic-response: false
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+security:
+  ignore-urls:
+    - /webjars/**
+    - /v3/api-docs/**
+    - /favicon.ico
+    - /actuator/**
+    - /error
+    - /api/login
+    - /api/logout
+    - /api/captcha/**
+    - /api/system/config/captcha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    metrics:
+      access: read_only
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+  metrics:
+    enable:
+      jvm: true
+      process: true
+      system: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+# 滑块验证码配置， 详细请看 cloud.tianai.captcha.autoconfiguration.ImageCaptchaProperties 类
+captcha:
+  # 如果项目中使用到了redis，滑块验证码会自动把验证码数据存到redis中， 这里配置redis的key的前缀,默认是captcha:slider
+  prefix: captcha
+  # 验证码过期时间，默认是2分钟,单位毫秒， 可以根据自身业务进行调整
+  expire:
+    # 默认缓存时间 2分钟
+    default: 120000
+    # 针对 点选验证码 过期时间设置为 2分钟， 因为点选验证码验证比较慢，把过期时间调整大一些
+    WORD_IMAGE_CLICK: 20000
+  # 使用加载系统自带的资源， 系统的默认资源包含滑动验证码模板和旋转验证码模板
+  init-default-resource: true
+  # 缓存控制， 默认为false不开启
+  local-cache-enabled: false
+  # 验证码会提前缓存一些生成好的验证数据， 默认是20
+  local-cache-size: 20
+  # 缓存拉取失败后等待时间 默认是 5秒钟
+  local-cache-wait-time: 5000
+  # 缓存检查间隔 默认是2秒钟
+  local-cache-period: 2000
+  # 配置字体库，文字点选验证码的字体库，可以配置多个
+  font-path:
+    - classpath:font/simhei.ttf
+  secondary:
+    # 二次验证， 默认false 不开启
+    enabled: false
+    # 二次验证过期时间， 默认 2分钟
+    expire: 120000
+    # 二次验证缓存key前缀，默认是 captcha:secondary
+    keyPrefix: "captcha:secondary"
+
+# 字典缓存配置
+dict:
+  cache:
+    enabled: true
+    dict-prefix: "dict:"  # 字典缓存前缀
+    dict-item-prefix: "dict_item:"  # 字典项缓存前缀
+    dict-items-prefix: "dict_items:"  # 字典项列表缓存前缀
+    # Caffeine 一级缓存配置
+    caffeine:
+      enabled: true  # 是否启用 Caffeine 本地缓存
+      initial-capacity: 100  # 初始容量
+      maximum-size: 1000  # 最大容量
+      expire-after-write: 10  # 写入后过期时间（分钟）
+      expire-after-access: 5  # 访问后过期时间（分钟）
+      record-stats: true  # 是否启用统计
+      refresh-after-write: true  # 是否启用异步刷新
+      refresh-after-write-minutes: 8  # 异步刷新间隔（分钟）
+    # Redis 二级缓存配置
+    redis:
+      enabled: true  # 是否启用 Redis 二级缓存
+      expire-time: 30  # 过期时间（分钟）
+    # 定时任务配置
+    scheduled:
+      enabled: true  # 是否启用定时任务
+      warm-up-cron: "0 0 2 * * ?"  # 缓存预热时间（每天凌晨2点）
+
+# 角色缓存配置
+role:
+  cache:
+    enabled: true
+    role-prefix: "role:"  # 角色缓存前缀
+    role-perms-prefix: "role_perms:"  # 角色权限缓存前缀
+    role-menus-prefix: "role_menus:"  # 角色菜单缓存前缀
+    user-roles-prefix: "user_roles:"  # 用户角色缓存前缀
+    # Caffeine 一级缓存配置
+    caffeine:
+      enabled: true  # 是否启用 Caffeine 本地缓存
+      initial-capacity: 50  # 初始容量
+      maximum-size: 500  # 最大容量
+      expire-after-write: 30  # 写入后过期时间（分钟）
+      expire-after-access: 15  # 访问后过期时间（分钟）
+      record-stats: true  # 是否启用统计
+      refresh-after-write: true  # 是否启用异步刷新
+      refresh-after-write-minutes: 25  # 异步刷新间隔（分钟）
+    # Redis 二级缓存配置
+    redis:
+      enabled: true  # 是否启用 Redis 二级缓存
+      expire-time: 60  # 过期时间（分钟）
+    # 定时任务配置
+    scheduled:
+      enabled: true  # 是否启用定时任务
+      warm-up-cron: "0 0 3 * * ?"  # 缓存预热时间（每天凌晨3点）
+
+# 菜单缓存配置
+menu:
+  cache:
+    enabled: true
+    menu-prefix: "menu:"  # 菜单缓存前缀
+    user-menus-prefix: "user_menus:"  # 用户菜单缓存前缀
+    role-menus-prefix: "role_menus:"  # 角色菜单缓存前缀
+    # Caffeine 一级缓存配置
+    caffeine:
+      enabled: true  # 是否启用 Caffeine 本地缓存
+      initial-capacity: 50  # 初始容量
+      maximum-size: 500  # 最大容量
+      expire-after-write: 15  # 写入后过期时间（分钟）
+      expire-after-access: 10  # 访问后过期时间（分钟）
+      record-stats: true  # 是否启用统计
+      refresh-after-write: true  # 是否启用异步刷新
+      refresh-after-write-minutes: 12  # 异步刷新间隔（分钟）
+    # Redis 二级缓存配置
+    redis:
+      enabled: true  # 是否启用 Redis 二级缓存
+      expire-time: 60  # 过期时间（分钟）
+    # 定时任务配置
+    scheduled:
+      enabled: true  # 是否启用定时任务
+      warm-up-cron: "0 0 4 * * ?"  # 缓存预热时间（每天凌晨4点）
+
+# 权限缓存配置
+permission:
+  cache:
+    enabled: true
+    permission-prefix: "permission:"  # 权限缓存前缀
+    user-permissions-prefix: "user_permissions:"  # 用户权限缓存前缀
+    user-perms-prefix: "user_perms:"  # 用户权限标识缓存前缀
+    role-permissions-prefix: "role_permissions:"  # 角色权限缓存前缀
+    # Caffeine 一级缓存配置
+    caffeine:
+      enabled: true  # 是否启用 Caffeine 本地缓存
+      initial-capacity: 50  # 初始容量
+      maximum-size: 500  # 最大容量
+      expire-after-write: 15  # 写入后过期时间（分钟）
+      expire-after-access: 10  # 访问后过期时间（分钟）
+      record-stats: true  # 是否启用统计
+      refresh-after-write: true  # 是否启用异步刷新
+      refresh-after-write-minutes: 12  # 异步刷新间隔（分钟）
+    # Redis 二级缓存配置
+    redis:
+      enabled: true  # 是否启用 Redis 二级缓存
+      expire-time: 60  # 过期时间（分钟）
+    # 定时任务配置
+    scheduled:
+      enabled: true  # 是否启用定时任务
+      warm-up-cron: "0 0 4 * * ?"  # 缓存预热时间（每天凌晨4点）
+
+# 系统配置缓存配置
+config:
+  cache:
+    enabled: true
+    config-prefix: "config:"  # 配置缓存前缀
+    # Caffeine 一级缓存配置
+    caffeine:
+      enabled: true  # 是否启用 Caffeine 本地缓存
+      initial-capacity: 50  # 初始容量
+      maximum-size: 200  # 最大容量
+      expire-after-write: 30  # 写入后过期时间（分钟）
+      expire-after-access: 20  # 访问后过期时间（分钟）
+      record-stats: true  # 是否启用统计
+    # Redis 二级缓存配置
+    redis:
+      enabled: true  # 是否启用 Redis 二级缓存
+      expire-time: 120  # 过期时间（分钟）
+    # 定时任务配置
+    scheduled:
+      enabled: true  # 是否启用定时任务
+      warm-up-cron: "0 0 4 * * ?"  # 缓存预热时间（每天凌晨4点）
+
+# API接口限流配置
+rate-limit:
+  enabled: true  # 是否启用限流
+  time: 60  # 默认时间窗口（秒）
+  count: 100  # 默认时间窗口内允许的最大请求数
+  alert-enabled: false  # 是否启用限流告警
+  alert-threshold: 80  # 限流告警阈值（百分比）

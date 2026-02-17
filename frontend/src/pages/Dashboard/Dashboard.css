@@ -1,0 +1,15 @@
+.user-statistic .ant-statistic-content {
+  color: #3f8600;
+}
+
+.role-statistic .ant-statistic-content {
+  color: #1890ff;
+}
+
+.permission-statistic .ant-statistic-content {
+  color: #722ed1;
+}
+
+.login-statistic .ant-statistic-content {
+  color: #eb2f96;
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dev.illichitcat</groupId>
+        <artifactId>backend</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rsa-quartz</artifactId>
+    <name>rsa-quartz</name>
+    <description>Quartz 定时任务模块</description>
+
+    <dependencies>
+        <!-- 依赖 rsa-common 模块 -->
+        <dependency>
+            <groupId>dev.illichitcat</groupId>
+            <artifactId>rsa-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 依赖 rsa-system 模块（需要访问数据库配置等） -->
+        <dependency>
+            <groupId>dev.illichitcat</groupId>
+            <artifactId>rsa-system</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

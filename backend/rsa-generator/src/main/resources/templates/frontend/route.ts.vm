@@ -1,0 +1,16 @@
+import type {Route} from "@/router/types";
+import {t} from "@/hooks/useTranslation";
+
+const ${table.className}: Route[] = [
+    {
+        path: "/${table.className.toLowerCase()}",
+        name: "${table.className}",
+        component: () => import(/* webpackChunkName: "${table.className}" */ "./pages/${table.className}"),
+        meta: {
+            title: t("${table.tableComment}管理"),
+            icon: "user",
+        },
+    },
+];
+
+export default ${table.className};

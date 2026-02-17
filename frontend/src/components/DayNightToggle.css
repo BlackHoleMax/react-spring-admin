@@ -1,0 +1,452 @@
+.day-night-toggle {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.day-night-toggle.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.day-night-toggle.animating {
+  cursor: wait;
+}
+
+.toggle-container {
+  position: relative;
+  width: 120px;
+  height: 60px;
+  border-radius: 60px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 10px rgba(0, 0, 0, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: all 0.5s ease;
+}
+
+.light .toggle-container {
+  background: linear-gradient(135deg, #6db9ff 0%, #9ce3ff 100%);
+}
+
+.dark .toggle-container {
+  background: linear-gradient(135deg, #0c1e3e 0%, #1a3a6a 100%);
+}
+
+.bg-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.cloud {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 50px;
+  opacity: 1;
+  transition: opacity 0.8s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dark .cloud {
+  opacity: 0;
+}
+
+.cloud.c1 {
+  width: 30px;
+  height: 12px;
+  top: 15px;
+  left: 25px;
+}
+
+.cloud.c2 {
+  width: 40px;
+  height: 15px;
+  top: 35px;
+  right: 20px;
+}
+
+.cloud.c3 {
+  width: 25px;
+  height: 10px;
+  top: 12px;
+  right: 40px;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+}
+
+.cloud.c1::before {
+  width: 15px;
+  height: 15px;
+  top: -5px;
+  left: 5px;
+}
+
+.cloud.c1::after {
+  width: 12px;
+  height: 12px;
+  top: -4px;
+  right: 8px;
+}
+
+.cloud.c2::before {
+  width: 20px;
+  height: 20px;
+  top: -8px;
+  left: 5px;
+}
+
+.cloud.c2::after {
+  width: 18px;
+  height: 18px;
+  top: -6px;
+  right: 5px;
+}
+
+.cloud.c3::before {
+  width: 12px;
+  height: 12px;
+  top: -4px;
+  left: 5px;
+}
+
+.cloud.c3::after {
+  width: 10px;
+  height: 10px;
+  top: -3px;
+  right: 6px;
+}
+
+.star {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0);
+  border-radius: 50%;
+  opacity: 0;
+  transition:
+    opacity 0.8s ease,
+    background-color 0.8s ease;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.dark .star {
+  background-color: rgba(255, 255, 255, 1);
+  opacity: 1;
+}
+
+.star.s1 {
+  width: 3px;
+  height: 3px;
+  top: 18px;
+  left: 35px;
+  animation: twinkle 3s infinite;
+}
+
+.star.s2 {
+  width: 2px;
+  height: 2px;
+  top: 30px;
+  left: 50px;
+  animation: twinkle 4s infinite 0.5s;
+}
+
+.star.s3 {
+  width: 4px;
+  height: 4px;
+  top: 40px;
+  left: 25px;
+  animation: twinkle 2.5s infinite 1s;
+}
+
+.star.s4 {
+  width: 2px;
+  height: 2px;
+  top: 22px;
+  right: 45px;
+  animation: twinkle 3.5s infinite 0.2s;
+}
+
+.star.s5 {
+  width: 3px;
+  height: 3px;
+  top: 35px;
+  right: 30px;
+  animation: twinkle 2.8s infinite 0.8s;
+}
+
+.star.s6 {
+  width: 2px;
+  height: 2px;
+  top: 45px;
+  right: 15px;
+  animation: twinkle 3.2s infinite 1.2s;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  height: 50px;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.slider {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.slider.day {
+  left: 0;
+  background: radial-gradient(circle at 30% 30%, #ffd700, #ffa500);
+}
+
+.slider.night {
+  left: calc(100% - 50px);
+  background: radial-gradient(circle at 30% 30%, #f0f0f0, #c0c0c0);
+}
+
+.sun-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.3s ease;
+}
+
+.slider.day .sun-icon {
+  opacity: 1;
+}
+
+.slider.night .sun-icon {
+  opacity: 0;
+}
+
+.sun-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  background-color: #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ffa500;
+}
+
+.sun-ray {
+  position: absolute;
+  background-color: #ffd700;
+  border-radius: 2px;
+  transform-origin: center;
+}
+
+.sun-ray.r1 {
+  width: 4px;
+  height: 12px;
+  top: -6px;
+  left: 14px;
+}
+
+.sun-ray.r2 {
+  width: 12px;
+  height: 4px;
+  top: 14px;
+  right: -6px;
+}
+
+.sun-ray.r3 {
+  width: 4px;
+  height: 12px;
+  bottom: -6px;
+  left: 14px;
+}
+
+.sun-ray.r4 {
+  width: 12px;
+  height: 4px;
+  top: 14px;
+  left: -6px;
+}
+
+.sun-ray.r5 {
+  width: 8px;
+  height: 4px;
+  top: 4px;
+  right: -6px;
+  transform: rotate(45deg);
+}
+
+.sun-ray.r6 {
+  width: 8px;
+  height: 4px;
+  bottom: 4px;
+  right: -6px;
+  transform: rotate(-45deg);
+}
+
+.sun-ray.r7 {
+  width: 8px;
+  height: 4px;
+  bottom: 4px;
+  left: -6px;
+  transform: rotate(45deg);
+}
+
+.sun-ray.r8 {
+  width: 8px;
+  height: 4px;
+  top: 4px;
+  left: -6px;
+  transform: rotate(-45deg);
+}
+
+.moon-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.3s ease;
+}
+
+.slider.day .moon-icon {
+  opacity: 0;
+}
+
+.slider.night .moon-icon {
+  opacity: 1;
+}
+
+.moon-body {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  box-shadow:
+    inset -4px 0 0 #d0d0d0,
+    0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.moon-crater {
+  position: absolute;
+  background-color: #d0d0d0;
+  border-radius: 50%;
+}
+
+.moon-crater.c1 {
+  width: 4px;
+  height: 4px;
+  top: 7px;
+  left: 12px;
+}
+
+.moon-crater.c2 {
+  width: 3px;
+  height: 3px;
+  top: 15px;
+  right: 8px;
+}
+
+.moon-crater.c3 {
+  width: 5px;
+  height: 5px;
+  bottom: 6px;
+  left: 10px;
+}
+
+.day-night-toggle:not(.disabled):hover .toggle-container {
+  box-shadow:
+    inset 0 2px 10px rgba(0, 0, 0, 0.1),
+    0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.day-night-toggle:not(.disabled):hover .slider.day {
+  box-shadow:
+    0 6px 20px rgba(255, 165, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.day-night-toggle:not(.disabled):hover .slider.night {
+  box-shadow:
+    0 6px 20px rgba(192, 192, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.day-night-toggle:focus-visible {
+  outline: 2px solid #4d90fe;
+  outline-offset: 2px;
+  border-radius: 60px;
+}
+
+@media (max-width: 768px) {
+  .toggle-container {
+    width: 100px;
+    height: 50px;
+  }
+
+  .toggle-slider {
+    height: 40px;
+  }
+
+  .slider {
+    width: 40px;
+    height: 40px;
+  }
+
+  .slider.night {
+    left: calc(100% - 40px);
+  }
+
+  .sun-icon,
+  .moon-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .sun-core {
+    width: 14px;
+    height: 14px;
+  }
+
+  .moon-body {
+    width: 20px;
+    height: 20px;
+  }
+}
